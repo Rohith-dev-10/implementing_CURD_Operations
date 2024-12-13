@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer | Customer Management System</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --background-color: #f3f4f6;
+            --card-background: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --input-background: #ffffff;
+            --error-background: #fee2e2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--card-background);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .customer-id {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background-color: var(--input-background);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--danger-color);
+            background-color: var(--error-background);
+        }
+
+        .form-input.modified {
+            border-color: var(--warning-color);
+        }
+
+        .modified-indicator {
+            position: absolute;
+            right: -1.5rem;
+            top: 2.5rem;
+            color: var(--warning-color);
+            font-size: 1.25rem;
+            display: none;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--background-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .required-field::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            background-color: var(--success-color);
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .history-log {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f8fafc;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-entry {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-entry:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1 class="title">Edit Customer</h1>
+                <div class="customer-id">Customer ID: {{ customer.id }}</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <form id="customerForm" method="post" onsubmit="return validateForm(event)">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label required-field" for="name">Full Name</label>
+                    <input type="text" 
+                           id="name" 
+                           name="name" 
+                           class="form-input" 
+                           required 
+                           minlength="2"
+                           maxlength="100"
+                           value="{{ customer.name }}"
+                           placeholder="Enter customer's full name">
+                    <span class="modified-indicator">●</span>
+                    <div class="error-message" id="name-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required-field" for="email">Email Address</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           class="form-input" 
+                           required
+                           value="{{ customer.email }}"
+                           placeholder="Enter customer's email address">
+                    <span class="modified-indicator">●</span>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required-field" for="phone">Phone Number</label>
+                    <input type="tel" 
+                           id="phone" 
+                           name="phone" 
+                           class="form-input" 
+                           required
+                           pattern="[0-9\-\+\s\(\)]{10,}"
+                           value="{{ customer.phone }}"
+                           placeholder="Enter customer's phone number">
+                    <span class="modified-indicator">●</span>
+                    <div class="error-message" id="phone-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required-field" for="address">Address</label>
+                    <textarea id="address" 
+                              name="address" 
+                              class="form-input" 
+                              required
+                              rows="3"
+                              placeholder="Enter customer's address">{{ customer.address }}</textarea>
+                    <span class="modified-indicator">●</span>
+                    <div class="error-message" id="address-error"></div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary" id="updateButton">Update Customer</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete Customer</button>
+                </div>
+            </form>
+
+            <div class="history-log">
+                <div class="history-title">Change History</div>
+                <div id="historyEntries">
+                    <!-- History entries will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Track original values for change detection
+        const originalValues = {
+            name: "{{ customer.name }}",
+            email: "{{ customer.email }}",
+            phone: "{{ customer.phone }}",
+            address: "{{ customer.address }}"
+        };
+
+        // Show toast message
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--danger-color)';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        // Track changes and show indicators
+        function trackChanges(field) {
+            const indicator = field.parentElement.querySelector('.modified-indicator');
+            const originalValue = originalValues[field.id];
+            const isModified = field.value !== originalValue;
+            
+            field.classList.toggle('modified', isModified);
+            indicator.style.display = isModified ? 'block' : 'none';
+            
+            updateButtonState();
+        }
+
+        // Update button state based on form changes
+        function updateButtonState() {
+            const updateButton = document.getElementById('updateButton');
+            const hasChanges = Object.keys(originalValues).some(key => {
+                const field = document.getElementById(key);
+                return field.value !== originalValues[key];
+            });
+            
+            updateButton.disabled = !hasChanges;
+            updateButton.style.opacity = hasChanges ? '1' : '0.5';
+        }
+
+        // Validate form fields
+        function validateField(field) {
+            const errorElement = document.getElementById(`${field.id}-error`);
+            let isValid = true;
+            let errorMessage = '';
+
+            field.classList.remove('error');
+            errorElement.style.display = 'none';
+
+            if (field.required && !field.value.trim()) {
+                errorMessage = 'This field is required';
+                isValid = false;
+            }
+
+            switch (field.id) {
+                case 'name':
+                    if (field.value.trim().length < 2) {
+                        errorMessage = 'Name must be at least 2 characters long';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'email':
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(field.value)) {
+                        errorMessage = 'Please enter a valid email address';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'phone':
+                    const phoneRegex = /^[0-9\-\+\s\(\)]{10,}$/;
+                    if (!phoneRegex.test(field.value)) {
+                        errorMessage = 'Please enter a valid phone number (minimum 10 digits)';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'address':
+                    if (field.value.trim().length < 5) {
+                        errorMessage = 'Please enter a complete address';
+                        isValid = false;
+                    }
+                    break;
+            }
+
+            if (!isValid) {
+                field.classList.add('error');
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = 'block';
+            }
+
+            return isValid;
+        }
+
+        // Validate entire form
+        function validateForm(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('customerForm');
+            const fields = form.querySelectorAll('input, textarea');
+            let isValid = true;
+
+            fields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            if (isValid) {
+                // If using Django's form submission
+                form.submit();
+                
+                // If using API endpoint
+                /*
+                const formData = new FormData(form);
+                fetch(`/api/customers/{{ customer.id }}/`, {
+                    method: 'PUT',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to update customer');
+                    showToast('Customer updated successfully');
+                    setTimeout(() => window.location.href = '/', 1500);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Failed to update customer', 'error');
+                });
+                */
+            }
+
+            return false;
+        }
+
+        // Confirm customer deletion
+        function confirmDelete() {
+            if (confirm('Are you sure you want to delete this customer? This action cannot be undone.')) {
+                fetch(`/api/customers/{{ customer.id }}/`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to delete customer');
+                    showToast('Customer deleted successfully');
+                    setTimeout(() => window.location.href = '/', 1500);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Failed to delete customer', 'error');
+                });
+            }
+        }
+
+        // Add event listeners
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('blur', () => validateField(input));
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) {
+                    validateField(input);
+                }
+                trackChanges(input);
+            });
+        });
+
+        // Populate change history (optional feature)
+        function populateHistory() {
+            const historyEntries = document.getElementById('historyEntries');
+            const changes = [
+                { field: 'Name', oldValue: originalValues.name, newValue: document.getElementById('name').value },
+                { field: 'Email', oldValue: originalValues.email, newValue: document.getElementById('email').value },
+                { field: 'Phone', oldValue: originalValues.phone, newValue: document.getElementById('phone').value },
+                { field: 'Address', oldValue: originalValues.address, newValue: document.getElementById('address').value },
+            ];
+
+            changes.forEach(change => {
+                if (change.oldValue !== change.newValue) {
+                    const historyEntry = document.createElement('div');
+                    historyEntry.classList.add('history-entry');
+                    historyEntry.textContent = `${change.field}: ${change.oldValue} → ${change.newValue}`;
+                    historyEntries.appendChild(historyEntry);
+                }
+            });
+        }
+
+        // Call populateHistory() after form submission or during editing
+        populateHistory();
+    </script>
+</body>
+</html>
