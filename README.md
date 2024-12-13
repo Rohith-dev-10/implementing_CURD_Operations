@@ -44,10 +44,7 @@ Before you get started, make sure you have the following installed:
 ### Navigate into the project directory:
 
 ## Install dependencies:
-
-bash
-Copy code
-pip install -r requirements.txt
+      pip install -r requirements.txt
 ## Set up your MySQL database:
    Create a database named service_crm in MySQL (or change the database name in your settings.py).
 ## Run database migrations:
