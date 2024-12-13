@@ -41,7 +41,7 @@ Before you get started, make sure you have the following installed:
  ### Navigate into the project directory:
     cd service_CRM
 
-    Navigate into the project directory:
+### Navigate into the project directory:
 
 ## Install dependencies:
 
@@ -49,12 +49,12 @@ bash
 Copy code
 pip install -r requirements.txt
 ## Set up your MySQL database:
-      Create a database named service_crm in MySQL (or change the database name in your settings.py).
+   Create a database named service_crm in MySQL (or change the database name in your settings.py).
 ## Run database migrations:
       python manage.py migrate
       
 ## Run the development server:
-      python manage.py runserver
+   python manage.py runserver
       Open your browser and visit http://127.0.0.1:8000/ to start interacting with the app! 🎉
 
 🧑‍💻 Future Enhancements
